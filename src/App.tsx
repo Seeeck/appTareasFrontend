@@ -12,7 +12,7 @@ function App() {
   const { data, refetch } = useListarTareas({ page })
   const [open, setOpen] = useState(false);
   const [openModalUpdateTarea, setOpenModalUpdateTarea] = useState(false);
-  const [idTarea,setIdTarea]=useState(0);
+  const [idTarea, setIdTarea] = useState(0);
   const ingresarTarea = () => {
     setOpen(true);
   }
@@ -33,22 +33,32 @@ function App() {
         <Box sx={styles.boxData}>
 
           {
-            data?.data?.data?.map((tarea, key) =>
+            data?.data?.data?.map((tarea: {
+              id: number
+              finalizada: boolean
+              tarea: string
+              horaInicio: string
+            }) =>
               <Tarea
                 key={tarea?.id}
                 tarea={tarea}
                 refetch={refetch}
-                id={idTarea}
+
                 setId={setIdTarea}
                 setOpenModalUpdate={setOpenModalUpdateTarea}
 
-                />
+              />
             )}
           <Pagination sx={styles.pagination} count={data?.data?.last_page} color="primary" onChange={handleChange} />
         </Box>
 
       </Box>
-      <ModalUpdateTarea open={openModalUpdateTarea} setOpen={setOpenModalUpdateTarea} id={idTarea} />
+      <ModalUpdateTarea
+        open={openModalUpdateTarea}
+        setOpen={setOpenModalUpdateTarea}
+        id={idTarea}
+        refetchTareas={refetch}
+      />
       <ModalIngresoTarea open={open} setOpen={setOpen} refetchTareas={refetch} />
     </>
   )

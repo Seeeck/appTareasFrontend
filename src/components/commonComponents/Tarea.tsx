@@ -6,12 +6,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import Button from '@mui/material/Button';
 import ActionModal from "./ActionModal";
 import { usePostBorrarTarea } from "../../querys/postBorrarTarea";
+import dayjs from "dayjs";
 type TareaProps = {
-    tarea: string
-    horaInicio: Date
-    finalizada: boolean
+    tarea: {
+        id:number 
+        finalizada:boolean
+        tarea:string
+        horaInicio:string
+    }
     refetch: Function
-    id:number
+
     setId:Function
     setOpenModalUpdate:Function
 }
@@ -32,6 +36,8 @@ const Tarea = ({ tarea, refetch,setId,setOpenModalUpdate }: TareaProps) => {
 
     }
 
+
+
     const onBorrarTarea = () => {
         //abrir modal
         setOpenModalBorrarTarea(true);
@@ -46,7 +52,9 @@ const Tarea = ({ tarea, refetch,setId,setOpenModalUpdate }: TareaProps) => {
 
                 <Box sx={{ display: "flex", flexDirection: "row",alignItems:"center" }} >
                     <Checkbox checked={checkedTarea} onClick={onCheck} />
-                    <Typography variant="h6">{tarea?.tarea}</Typography>
+                    <Typography style={{
+                        wordBreak:"break-word"
+                    }} textAlign="justify" variant="h6">{tarea?.tarea}</Typography>
                 </Box>
 
                 <Box>
@@ -61,7 +69,7 @@ const Tarea = ({ tarea, refetch,setId,setOpenModalUpdate }: TareaProps) => {
             </Box>
 
             <Typography>Hora de inicio </Typography>
-            <Typography>{tarea?.horaInicio}</Typography>
+            <Typography>{dayjs(tarea.horaInicio).format("HH:mm")}</Typography>
             <ActionModal
                 title="Borrar tarea"
                 label={tarea?.tarea}
@@ -87,7 +95,9 @@ const styles: { [key: string]: React.CSSProperties } = {
         borderColor:"#1976d2",
         borderRadius:5,
         padding:5,
-        margin:2
+        margin:2,
+        width:250,
+        
 
     },
     boxCheckDelete: {

@@ -6,29 +6,32 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import formTareaSchema from "./schemas/formTareaSchema";
 import { useGetTarea } from "./querys/getTarea";
 import dayjs from "dayjs";
+import { useUpdateTarea } from "./querys/updateTarea";
+import { toast } from "react-toastify";
 type Props = {
     open: boolean
     setOpen: Function
     id: number
-
+    refetchTareas:Function
 }
 
-const ModalUpdateTarea = ({ open, setOpen, id }: Props) => {
+const ModalUpdateTarea = ({ open, setOpen, id,refetchTareas }: Props) => {
     //obtener tarea
     const { data } = useGetTarea({ id: id })
-  
+    const { mutate } = useUpdateTarea()
     const { handleSubmit, control, formState: { errors }, reset: resetForm } = useForm({
         shouldUseNativeValidation: false,
         defaultValues: {
             tarea: "",
-            horaInicio:"",
+            horaInicio: "",
 
         },
         values: {
             tarea: data?.tarea,
-            horaInicio:dayjs(data?.horaInicio),
+            horaInicio: dayjs(data?.horaInicio),
         },
-     //   resolver: yupResolver(formTareaSchema)
+        resolver: yupResolver(formTareaSchema),
+
 
     })
     const handleClose = () => {
@@ -38,7 +41,30 @@ const ModalUpdateTarea = ({ open, setOpen, id }: Props) => {
 
 
     const onSubmit = (data: any) => {
+        data.id=id
 
+        const date1 = new Date(data?.horaInicio)
+     
+        const horaInicio = date1.toLocaleTimeString('es-CL', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+     
+        data.horaInicio = horaInicio;
+     
+        mutate(data, {
+            onSuccess: () => {
+                toast("Tarea actualizada", { type: "success" })
+                setOpen(false);
+                refetchTareas()
+                resetForm()
+            },
+            onError: (err) => {
+                console.log(err)
+                toast("Error actualizar tarea", { type: "error" })
+            }
+        })
     }
     return (
         <Modal open={open}
@@ -51,7 +77,7 @@ const ModalUpdateTarea = ({ open, setOpen, id }: Props) => {
                     Modificar tarea
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    <InputTextField  control={control} name='tarea' placeholder='Nombre de la tarea' />
+                    <InputTextField control={control} name='tarea' placeholder='Nombre de la tarea' />
                 </Typography>
                 <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                     <InputTimePicker control={control} name='horaInicio' placeholder='Ingrese hora de inicio' />

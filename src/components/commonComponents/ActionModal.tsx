@@ -54,7 +54,7 @@ const ActionModal = ({
             <Box sx={styles.boxStyle}>
                 <Typography variant='h4'>{title}</Typography>
 
-                <Typography variant='h5'>{label}</Typography>
+                <Typography style={{wordBreak:"break-word"}} variant='h5'>{label}</Typography>
                 <Box>
                     <Button onClick={onAction}>{textFirstAction}</Button>
                     <Button onClick={onCloseModal}>{textSecondAction}</Button>

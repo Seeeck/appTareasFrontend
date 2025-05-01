@@ -29,6 +29,7 @@ const InputTextField: React.FC<Props> = ({ name, control,  placeholder, ...rest 
           fullWidth
           placeholder={placeholder}
           style={styles.textField}
+          
 
         />
       )}
